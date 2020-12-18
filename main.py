@@ -16,20 +16,22 @@ class anggotaKeluarga(dataKeluarga):
         self.nama = []
         self.nikAnggota = []
 
-    def anggota(self):
-        if self.anggota > 1 :
-            for x in range(len(self.anggota - 1)):
-                self.nama.append(input("Masukkan nama anggota keluarga {} : ".format(x)))
-                self.nikAnggota.append(input("Masukkan NIK anggota keluarga {} : ".format(x)))
+    def setAnggota(self):
+        for x in range (self.anggota - 1):
+            self.nama.append(input("Nama anggota keluarga {} : ".format(x+2)))
+            self.nikAnggota.append(int(input("Masukkan NIK {} : ".format(self.nama[x]))))
 
     def show(self):
-        print("Nomer KK : {} \nNama anggota keluarga : {} \nNIK : {}".format(self.noKK, self.kepalaKeluarga, self.nik))
-        for x in self.nikAnggota:
-            return "No KK : {} \nNama anggota keluarga : {} \nNIK : {}".format(self.noKK, self.nama[x], self.nikAnggota[x])
+        print("Nomer KK : {} \nKepala keluarga : {} \nNIK : {}".format(self.noKK, self.kepalaKeluarga, self.nik))
+        for x in range (len(self.nikAnggota)):
+            print()
+            print("No KK : {} \nNama anggota keluarga : {} \nNIK : {}".format(self.noKK, self.nama[x], self.nikAnggota[x]))
 
-keluarga = dataKeluarga(123, 'anto', 345, 1000000, 'Sumbersari')
-print(keluarga.show())
+# keluarga = dataKeluarga(int(input("Masukkan No KK : ")), input("Masukkan nama kepala keluarga : "), int(input("Masukkan NIK : ")), int(input("Masukkan total penghasilan : ")), input("Masukkan alamat : "))
+# print()
+# print(keluarga.show())
 
-# keluarga = anggotaKeluarga(123, 'anto', 345, 1000000, 'Sumbersari', 2)
-# keluarga.anggota()
-# print(keluarga.show)
+keluarga = anggotaKeluarga(int(input("No KK : ")), input("Nama kepala keluarga : "), int(input("NIK : ")), int(input("Total penghasilan : ")), input("Alamat : "), int(input("Jumlah anggota keluarga : ")))
+keluarga.setAnggota()
+print()
+keluarga.show()
