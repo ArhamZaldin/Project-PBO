@@ -6,11 +6,15 @@ class database:
         self.cursor = self.conn.cursor()
 
     def executeQuery(self, query, retVal=False):
-        self.cursor.execute(query)
-        results = self.cursor.fetchall()
+        res = self.cursor.execute(query)
+        results = res.fetchall()
         self.conn.commit()
         if retVal:
             return results
+
+    def checkVal(self, query):
+        res = self.cursor.execute(query)
+        return res.fetchone()
 
     def close(self):
         self.conn.close()
@@ -18,10 +22,11 @@ class database:
 class dataKeluarga(database):
     def setKeluarga(self, noKK, kepalaKeluarga, anggota, total, alamat):
         self.executeQuery("CREATE TABLE IF NOT EXISTS Keluarga (noKK int primary key, kepalaKeluarga varchar, anggotaKeluarga int, totalPendapatan float, alamat varchar)")
-        query = f"SELECT * FROM Keluarga WHERE noKK = {noKK}"
-        check = self.executeQuery(query, True)
+        query = f"SELECT * FROM Keluarga WHERE noKK = '{noKK}'"
+        # check = self.executeQuery(query, True)
+        check = self.checkVal(query)
         if check is None:
-            query2 = f"INSERT INTO Keluarga VALUES ({noKK}, {kepalaKeluarga}, {anggota}, {total}, {alamat})"
+            query2 = f"INSERT INTO Keluarga VALUES ('{noKK}', '{kepalaKeluarga}', '{anggota}', '{total}', '{alamat}')"
             self.executeQuery(query2)
             print(f"Sdr/i {kepalaKeluarga} berhasil didaftarkan sebagai kepala keluarga.")
         else:
@@ -30,58 +35,61 @@ class dataKeluarga(database):
     def showKeluarga(self):
         list = self.executeQuery("SELECT * FROM Keluarga ORDER BY kepalaKeluarga", True)
         for row in list:
-            print(f'{row[0]} \t {row[1]} \t {row[2]} \t {row[3]} \t {row[4]}')
+            print(f' \t\t {row[0]} \t\t {row[1]} \t\t\t {row[2]} \t\t\t\t {row[3]} \t\t {row[4]}')
 
     def readByTotalBelow(self, total):
-        query = f"SELECT * FROM Keluarga WHERE totalPendapatan < {total} ORDER BY kepalaKeluarga"
+        query = f"SELECT * FROM Keluarga WHERE totalPendapatan < '{total}' ORDER BY kepalaKeluarga"
         list = self.executeQuery(query, True)
         for row in list:
-            print(f'{row[0]} \t {row[1]} \t {row[2]} \t {row[3]} \t {row[4]}')
+            print(f' \t\t {row[0]} \t\t {row[1]} \t\t\t {row[2]} \t\t\t\t {row[3]} \t\t {row[4]}')
 
     def readByTotalAbove(self, total):
-        query = f"SELECT * FROM Keluarga WHERE totalPendapatan > {total} ORDER BY kepalaKeluarga"
+        query = f"SELECT * FROM Keluarga WHERE totalPendapatan > '{total}' ORDER BY kepalaKeluarga"
         list = self.executeQuery(query, True)
         for row in list:
-            print(f'{row[0]} \t {row[1]} \t {row[2]} \t {row[3]} \t {row[4]}')
+            print(f' \t\t{row[0]} \t\t {row[1]} \t\t\t {row[2]} \t\t\t\t {row[3]} \t\t {row[4]}')
 
     def readByAnggotaBelow(self, anggota):
-        query = f"SELECT * FROM Keluarga WHERE anggotaKeluarga < {anggota} ORDER BY kepalaKeluarga"
+        query = f"SELECT * FROM Keluarga WHERE anggotaKeluarga < '{anggota}' ORDER BY kepalaKeluarga"
         list = self.executeQuery(query, True)
         for row in list:
-            print(f'{row[0]} \t {row[1]} \t {row[2]} \t {row[3]} \t {row[4]}')
+            print(f' \t\t {row[0]} \t\t {row[1]} \t\t\t {row[2]} \t\t\t\t {row[3]} \t\t {row[4]}')
 
     def readByAnggotaAbove(self, anggota):
-        query = f"SELECT * FROM Keluarga WHERE anggotaKeluarga > {anggota} ORDER BY kepalaKeluarga"
+        query = f"SELECT * FROM Keluarga WHERE anggotaKeluarga > '{anggota}' ORDER BY kepalaKeluarga"
         list = self.executeQuery(query, True)
         for row in list:
-            print(f'{row[0]} \t {row[1]} \t {row[2]} \t {row[3]} \t {row[4]}')
+            print(f' \t\t {row[0]} \t\t {row[1]} \t\t\t {row[2]} \t\t\t\t {row[3]} \t\t {row[4]}')
 
     def updateTotalPendapatan(self, noKK, total):
-        query = f"SELECT * FROM Keluarga WHERE noKK = {noKK}"
-        check = self.executeQuery(query, True)
+        query = f"SELECT * FROM Keluarga WHERE noKK = '{noKK}'"
+        # check = self.executeQuery(query, True)
+        check = self.checkVal(query)
         if check is not None:
-            query2 = f"UPDATE Keluarga SET totalPendapatan = {total} WHERE noKK = {noKK}"
+            query2 = f"UPDATE Keluarga SET totalPendapatan = '{total}' WHERE noKK = '{noKK}'"
             self.executeQuery(query2)
             print(f"Total pendapatan berhasil diubah menjadi {total}.")
         else:
             print(f"Nomor KK {noKK} tidak ditemukan!")
 
     def updateAlamat(self, noKK, alamat):
-        query = f"SELECT * FROM Keluarga WHERE noKK = {noKK}"
-        check = self.executeQuery(query, True)
+        query = f"SELECT * FROM Keluarga WHERE noKK = '{noKK}'"
+        # check = self.executeQuery(query, True)
+        check = self.checkVal(query)
         if check is not None:
-            query2 = f"UPDATE Keluarga SET alamat = {alamat} WHERE noKK = {noKK}"
+            query2 = f"UPDATE Keluarga SET alamat = '{alamat}' WHERE noKK = '{noKK}'"
             self.executeQuery(query2)
             print(f"Alamat berhasil diubah menjadi {alamat}.")
         else:
             print(f"Nomor KK {noKK} tidak ditemukan!")
 
     def delKeluarga(self, noKK):
-        query = f"SELECT * FROM Keluarga WHERE noKK = {noKK}"
-        check = self.executeQuery(query, True)
+        query = f"SELECT * FROM Keluarga WHERE noKK = '{noKK}'"
+        # check = self.executeQuery(query, True)
+        check = self.checkVal(query)
         if check is not None:
-            query2 = f"DELETE FROM Keluarga WHERE noKK = {noKK}"
-            query3 = f"DELETE FROM Anggota_Keluarga WHERE noKK = {noKK}"
+            query2 = f"DELETE FROM Keluarga WHERE noKK = '{noKK}'"
+            query3 = f"DELETE FROM Anggota_Keluarga WHERE noKK = '{noKK}'"
             self.executeQuery(query2)
             self.executeQuery(query3)
             print(f"Data keluarga dengan Nomor KK {noKK} berhasil dihapus!")
@@ -89,24 +97,25 @@ class dataKeluarga(database):
             print(f"Nomor KK {noKK} tidak ditemukan!")
 
     def searchDetailKeluarga(self, noKK):
-        query = f"SELECT * FROM Keluarga WHERE noKK = {noKK}"
-        check = self.executeQuery(query, True)
+        query = f"SELECT * FROM Keluarga WHERE noKK = '{noKK}'"
+        check = self.checkVal(query)
+        list = self.executeQuery(query, True)
         if check is not None:
             print("""
             ~ ~ DATA KELUARGA ~ ~
             ---------------------
             """)
-            for row in check:
+            for row in list:
                 print(f'Nomer KK : {row[0]} \nKepala Keluarga : {row[1]} \nJumlah anggota keluarga : {row[2]} \nTotal pendapatan : {row[3]} \nAlamat : {row[4]}')
                 print()
 
-            query2 = f"SELECT * FROM Anggota_Keluarga WHERE noKK = {noKK}"
-            check2 = self.executeQuery(query2, True)
+            query2 = f"SELECT * FROM Anggota_Keluarga WHERE noKK = '{noKK}'"
+            list2 = self.executeQuery(query2, True)
             print("""
             ~ ~ ~ ANGGOTA KELUARGA ~ ~ ~
             ----------------------------
             """)
-            for rows in check2:
+            for rows in list2:
                 print(f'NIK : {rows[0]} \nNama : {rows[1]}')
                 print()
         else:
@@ -116,18 +125,19 @@ class anggotaKeluarga(dataKeluarga):
     def addKeluarga(self, noKK, kepalaKeluarga, anggota, total, alamat, nik):
         self.setKeluarga(noKK, kepalaKeluarga, anggota, total, alamat)
         self.executeQuery("CREATE TABLE IF NOT EXISTS Anggota_Keluarga (NIK int primary key, nama varchar, noKK int, foreign key(noKK) REFERENCES Keluarga(noKK))")
-        # query = f"INSERT INTO Anggota_Keluarga VALUES ({nik}, {kepalaKeluarga}, {noKK})"
-        query = "INSERT INTO Anggota_Keluarga VALUES (?, ?, ?)", (nik, kepalaKeluarga, noKK)
+        query = f"INSERT INTO Anggota_Keluarga VALUES ('{nik}', '{kepalaKeluarga}', '{noKK}')"
         self.executeQuery(query)
 
     def setAnggota(self, nikAnggota, nama, noKK):
-        query = f"SELECT * FROM Keluarga WHERE noKK = {noKK}"
-        check = self.executeQuery(query, True)
+        query = f"SELECT * FROM Keluarga WHERE noKK = '{noKK}'"
+        # check = self.executeQuery(query, True)
+        check = self.checkVal(query)
         if check is not None:
-            query2 = f"SELECT * FROM Anggota_Keluarga WHERE NIK = {nikAnggota}"
-            check = self.executeQuery(query2, True)
-            if check is None:
-                query3 = f"INSERT INTO Anggota_Keluarga VALUES ({nikAnggota}, {nama}, {noKK})"
+            query2 = f"SELECT * FROM Anggota_Keluarga WHERE NIK = '{nikAnggota}'"
+            # check2 = self.executeQuery(query2, True)
+            check2 = self.checkVal(query2)
+            if check2 is None:
+                query3 = f"INSERT INTO Anggota_Keluarga VALUES ('{nikAnggota}', '{nama}', '{noKK}')"
                 self.executeQuery(query3)
                 print(f"Sdr/i {nama} berhasil didaftarkan sebagai anggota keluarga")
                 return False
@@ -145,29 +155,28 @@ class anggotaKeluarga(dataKeluarga):
         print(f"Nama anggota keluarga : {nama} \nNIK : {nikAnggota}")
 
     def delKeluarga(self, noKK):
-        query = f"DELETE FROM Keluarga WHERE noKK = {noKK}"
-        query2 = f"DELETE FROM Anggota_Keluarga WHERE noKK = {noKK}"
+        query = f"DELETE FROM Keluarga WHERE noKK = '{noKK}'"
+        query2 = f"DELETE FROM Anggota_Keluarga WHERE noKK = '{noKK}'"
         self.executeQuery(query)
         self.executeQuery(query2)
 
     def delAnggota(self, noKK, nikAnggota):
-        query = f"SELECT * FROM Anggota_Keluarga WHERE noKK = {noKK} and NIK = {nikAnggota}"
-        check = self.executeQuery(query, True)
+        query = f"SELECT * FROM Anggota_Keluarga WHERE noKK = '{noKK}' and NIK = '{nikAnggota}'"
+        # check = self.executeQuery(query, True)
+        check = self.checkVal(query)
         if check is not None:
-            query2 = f"DELETE FROM Anggota_Keluarga WHERE NIK = {nikAnggota}"
+            query2 = f"DELETE FROM Anggota_Keluarga WHERE NIK = '{nikAnggota}'"
             self.executeQuery(query2)
             print(f"Anggota keluarga dengan NIK {nikAnggota} berhasil dihapus!")
         else:
             print(f"Nomer KK {noKK} atau NIK {nikAnggota} tidak ditemukan!")
 
     def updateAnggota(self, noKK):
-        query = f"SELECT * FROM Anggota_Keluarga WHERE noKK = {noKK}"
-        check = self.executeQuery(query, True)
-        anggota = []
-        for row in check:
-            anggota.append(row)
-        query2 = f"UPDATE Keluarga SET anggotaKeluarga = {len(anggota)} WHERE noKK = {noKK}"
-        self.executeQuery(query2)
+        query = f"SELECT count(*) FROM Anggota_Keluarga WHERE noKK = '{noKK}'"
+        list = self.executeQuery(query, True)
+        for row in list:
+            query2 = f"UPDATE Keluarga SET anggotaKeluarga = '{row[0]}' WHERE noKK = '{noKK}'"
+            self.executeQuery(query2)
 
 class bantuan(database):
     def __init__(self, umr):
@@ -175,38 +184,41 @@ class bantuan(database):
         self.umr = umr
 
     def analyze(self):
-        query = f"SELECT * FROM Keluarga WHERE totalPendapatan <= {self.umr}"
-        check = self.executeQuery(query, True)
+        query = f"SELECT * FROM Keluarga WHERE totalPendapatan <= '{self.umr}'"
+        list = self.executeQuery(query, True)
         anggota = []
         limit = []
         z = 0
-        for row in check:
+        for row in list:
             anggota.append(row[2])
             limit.append(float(self.umr - row[3]))
         for x in range(len(anggota)):
             if anggota[x] > 1:
                 for y in range(anggota[x] - 1):
                     limit[x] += 100000
-        for rows in check:
-            print(f'{rows[0]} \t{rows[1]} \t{rows[4]} \t{limit[z]}')
+        for rows in list:
+            print(f' \t {rows[0]} \t\t {rows[1]} \t\t {rows[4]} \t\t {limit[z]}')
             z += 1
 
 class rekap(database):
     def catatBantuan(self, noKK, donations):
-        self.executeQuery("CREATE TABLE IF NOT EXISTS Rekap_Data (id_rekap int NOT NULL auto increment UNIQUE primary key, noKK int foreign key references Keluarga(noKK), bantuan float)")
-        query = f"SELECT * FROM Keluarga WHERE noKK = {noKK}"
-        check = self.executeQuery(query, True)
+        self.executeQuery("CREATE TABLE IF NOT EXISTS Rekap_Data (idRekap INTEGER PRIMARY KEY, noKK int, bantuan float, FOREIGN KEY(noKK) references Keluarga(noKK))")
+        query = f"SELECT * FROM Keluarga WHERE noKK = '{noKK}'"
+        # check = self.executeQuery(query, True)
+        check = self.checkVal(query)
         if check is not None:
-            query2 = f"INSERT INTO Rekap_Data VALUES ({noKK}, {donations})"
+            query2 = f"INSERT INTO Rekap_Data VALUES (null, '{noKK}', '{donations}')"
             self.executeQuery(query2)
+            print("Data berhasil direkap!")
         else:
             print(f"Nomer KK {noKK} belum terdaftar!")
 
     def riwayatBantuan(self):
-        check = self.executeQuery("SELECT * FROM Rekap_Data", True)
+        list = self.executeQuery("SELECT * FROM Rekap_Data", True)
+        check = self.checkVal("SELECT * FROM Rekap_Data")
         if check is not None:
-            for row in check:
-                print(f'{row[0]} \t{row[1]} \t{row[2]}')
+            for row in list:
+                print(f' \t\t{row[0]} \t {row[1]} \t\t {row[2]}')
         else:
             print("~ ~ DATA KOSONG ~ ~")
 
@@ -219,11 +231,11 @@ def addDataKeluarga():
     ---------------------------------
     """)
     noKK = int(input("Nomer KK : "))
-    kepalaKeluarga = input("Nama kepala keluarga : ")
+    kepalaKeluarga = str(input("Nama kepala keluarga : "))
     nik = int(input("NIK : "))
     anggota = int(input("Jumlah anggota keluarga : "))
     total = float(input("Total pendapatan : "))
-    alamat = input("Alamat : ")
+    alamat = str(input("Alamat : "))
     nama = []
     nikAnggota = []
     keluarga = anggotaKeluarga()
@@ -231,7 +243,7 @@ def addDataKeluarga():
     for x in range (anggota - 1):
         tryAgain = True
         while tryAgain:
-            nama.append(input(f"Nama anggota keluarga {x+2} : "))
+            nama.append(str(input(f"Nama anggota keluarga {x+2} : ")))
             nikAnggota.append(int(input(f"Masukkan NIK {nama[x]} : ")))
             tryAgain = keluarga.setAnggota(nikAnggota[x], nama[x], noKK)
     keluarga.showKeluarga(noKK, kepalaKeluarga, anggota, total, alamat, nik)
@@ -262,25 +274,46 @@ def showDataKeluarga():
         5. Anggota keluarga lebih dari ...
     """)
     option = input("Masukkan pilihan : ")
-    print("""
-    Nomor KK    Kepala Keluarga     Anggota Keluarga    Total Pendapatan    Alamat
-    ================================================================================
-    """)
+
     if option == '1':
+        print("""
+        Nomor KK   Kepala Keluarga   Anggota Keluarga   Total Pendapatan   Alamat
+        ===========================================================================
+        """)
         keluarga = dataKeluarga()
         keluarga.showKeluarga()
     elif option == '2':
+        pendapatan = float(input("Total pendapatan kurang dari : "))
+        print("""
+        Nomor KK   Kepala Keluarga   Anggota Keluarga   Total Pendapatan   Alamat
+        ===========================================================================
+        """)
         keluarga = dataKeluarga()
-        keluarga.readByTotalBelow(float(input("Total pendapatan kurang dari : ")))
+        keluarga.readByTotalBelow(pendapatan)
     elif option == '3':
+        pendapatan = float(input("Total pendapatan lebih dari : "))
+        print("""
+        Nomor KK   Kepala Keluarga   Anggota Keluarga   Total Pendapatan   Alamat
+        ===========================================================================
+        """)
         keluarga = dataKeluarga()
-        keluarga.readByTotalAbove(float(input("Total pendapatan lebih dari : ")))
+        keluarga.readByTotalAbove(pendapatan)
     elif option == '4':
+        anggota = int(input("Anggota keluarga kurang dari : "))
+        print("""
+        Nomor KK   Kepala Keluarga   Anggota Keluarga   Total Pendapatan   Alamat
+        ===========================================================================
+        """)
         keluarga = dataKeluarga()
-        keluarga.readByAnggotaBelow(int(input("Anggota keluarga kurang dari : ")))
+        keluarga.readByAnggotaBelow(anggota)
     elif option == '5':
+        anggota = int(input("Anggota keluarga lebih dari : "))
+        print("""
+        Nomor KK   Kepala Keluarga   Anggota Keluarga   Total Pendapatan   Alamat
+        ===========================================================================
+        """)
         keluarga = dataKeluarga()
-        keluarga.readByAnggotaAbove(int(input("Anggota keluarga lebih dari : ")))
+        keluarga.readByAnggotaAbove(anggota)
     else:
         print("Masukkan pilihan dengan benar!")
 
@@ -372,8 +405,8 @@ def recommend():
     """)
     dana = bantuan(float(input("Masukkan UMR : ")))
     print("""
-    Nomer KK    Kepala Keluarga     Alamat      Saran Bantuan
-    ===========================================================
+    Nomer KK    Kepala Keluarga         Alamat      Saran Bantuan
+    ===============================================================
     """)
     dana.analyze()
 
@@ -397,8 +430,8 @@ def rekapDana():
         -----------------------
         ~ ~ Riwayat Bantuan ~ ~
         -----------------------
-        ID  Nomer KK    Bantuan
-        =======================
+        ID   Nomer KK     Bantuan
+        ==========================
         """)
         data = rekap()
         data.riwayatBantuan()
