@@ -23,7 +23,6 @@ class dataKeluarga(database):
     def setKeluarga(self, noKK, kepalaKeluarga, anggota, total, alamat):
         self.executeQuery("CREATE TABLE IF NOT EXISTS Keluarga (noKK int primary key, kepalaKeluarga varchar, anggotaKeluarga int, totalPendapatan float, alamat varchar)")
         query = f"SELECT * FROM Keluarga WHERE noKK = '{noKK}'"
-        # check = self.executeQuery(query, True)
         check = self.checkVal(query)
         if check is None:
             query2 = f"INSERT INTO Keluarga VALUES ('{noKK}', '{kepalaKeluarga}', '{anggota}', '{total}', '{alamat}')"
@@ -63,7 +62,6 @@ class dataKeluarga(database):
 
     def updateTotalPendapatan(self, noKK, total):
         query = f"SELECT * FROM Keluarga WHERE noKK = '{noKK}'"
-        # check = self.executeQuery(query, True)
         check = self.checkVal(query)
         if check is not None:
             query2 = f"UPDATE Keluarga SET totalPendapatan = '{total}' WHERE noKK = '{noKK}'"
@@ -74,7 +72,6 @@ class dataKeluarga(database):
 
     def updateAlamat(self, noKK, alamat):
         query = f"SELECT * FROM Keluarga WHERE noKK = '{noKK}'"
-        # check = self.executeQuery(query, True)
         check = self.checkVal(query)
         if check is not None:
             query2 = f"UPDATE Keluarga SET alamat = '{alamat}' WHERE noKK = '{noKK}'"
@@ -85,7 +82,6 @@ class dataKeluarga(database):
 
     def delKeluarga(self, noKK):
         query = f"SELECT * FROM Keluarga WHERE noKK = '{noKK}'"
-        # check = self.executeQuery(query, True)
         check = self.checkVal(query)
         if check is not None:
             query2 = f"DELETE FROM Keluarga WHERE noKK = '{noKK}'"
@@ -130,11 +126,9 @@ class anggotaKeluarga(dataKeluarga):
 
     def setAnggota(self, nikAnggota, nama, noKK):
         query = f"SELECT * FROM Keluarga WHERE noKK = '{noKK}'"
-        # check = self.executeQuery(query, True)
         check = self.checkVal(query)
         if check is not None:
             query2 = f"SELECT * FROM Anggota_Keluarga WHERE NIK = '{nikAnggota}'"
-            # check2 = self.executeQuery(query2, True)
             check2 = self.checkVal(query2)
             if check2 is None:
                 query3 = f"INSERT INTO Anggota_Keluarga VALUES ('{nikAnggota}', '{nama}', '{noKK}')"
@@ -162,7 +156,6 @@ class anggotaKeluarga(dataKeluarga):
 
     def delAnggota(self, noKK, nikAnggota):
         query = f"SELECT * FROM Anggota_Keluarga WHERE noKK = '{noKK}' and NIK = '{nikAnggota}'"
-        # check = self.executeQuery(query, True)
         check = self.checkVal(query)
         if check is not None:
             query2 = f"DELETE FROM Anggota_Keluarga WHERE NIK = '{nikAnggota}'"
@@ -204,7 +197,6 @@ class rekap(database):
     def catatBantuan(self, noKK, donations):
         self.executeQuery("CREATE TABLE IF NOT EXISTS Rekap_Data (idRekap INTEGER PRIMARY KEY, noKK int, bantuan float, FOREIGN KEY(noKK) references Keluarga(noKK))")
         query = f"SELECT * FROM Keluarga WHERE noKK = '{noKK}'"
-        # check = self.executeQuery(query, True)
         check = self.checkVal(query)
         if check is not None:
             query2 = f"INSERT INTO Rekap_Data VALUES (null, '{noKK}', '{donations}')"
