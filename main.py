@@ -182,16 +182,19 @@ class bantuan(database):
         anggota = []
         limit = []
         z = 0
-        for row in list:
-            anggota.append(row[2])
-            limit.append(float(self.umr - row[3]))
-        for x in range(len(anggota)):
-            if anggota[x] > 1:
-                for y in range(anggota[x] - 1):
-                    limit[x] += 100000
-        for rows in list:
-            print(f' \t {rows[0]} \t\t {rows[1]} \t\t {rows[4]} \t\t {limit[z]}')
-            z += 1
+        if list:
+            for row in list:
+                anggota.append(row[2])
+                limit.append(float(self.umr - row[3]))
+            for x in range(len(anggota)):
+                if anggota[x] > 1:
+                    for y in range(anggota[x] - 1):
+                        limit[x] += 100000
+            for rows in list:
+                print(f' \t {rows[0]} \t\t {rows[1]} \t\t {rows[4]} \t\t {limit[z]}')
+                z += 1
+        else:
+            print("\t\t\t\t\tData tidak ada yang cocok!")
 
 class rekap(database):
     def catatBantuan(self, noKK, donations):
